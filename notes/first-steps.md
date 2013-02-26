@@ -1,0 +1,1 @@
+- I should have a look at the TOC and methodology of "Python for kids"
