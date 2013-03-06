@@ -59,3 +59,39 @@ gruppe und clip-path auswählen, clip setzen
 (clip-path muss über der gruppe liegen in z-order)
 so würde ich es vermutlich machen
 es geht auch mit einer maske (aber ich finde clipping in diesem fall besser, persönlich - das entspricht mehr einer 'difference' operation)
+
+
+http://bazaar.launchpad.net/~inkscape.dev/inkscape/trunk/view/head:/share/extensions/cubicsuperpath.py
+
+schau einfach mal rein in die module, die inkscape mit dabei hat
+
+
+http://bazaar.launchpad.net/~inkscape.dev/inkscape/trunk/view/head:/share/extensions/perspective.py
+
+mir geht es nur ein verfahren zu automatisieren...
+
+rausfinden welche formen befinden sich unter die ausgewählte und dann ein paar manipulationen zu machen.
+
+es geht hautpsächlich darum zu lernen, was mit scripting gemacht werden kann und die spezifische task ist eher unwichtig.
+die aktuelle erweiterungsarchitektur hat keine schnittstelle im eigentlichen sinn: sie basiert auf etree (lxml) und v.a. <http://wiki.inkscape.org/wiki/index.php/Python_modules_for_extensions>
+
+die neue, dbus-basierte schnittstelle ist nicht fertig (keine knoten-manipulation möglich), aber beinhaltet wesentliche hooks:
+
+http://dl.dropbox.com/u/65084033/devel/dbus/doc/inkscapeDbusRef.html
+
+nur gibt es kein 'framework' / python module, das ein schnelles erstellen von spezifischen tasks erlaubt
+
+-> wenn du bezier kurven punktweise manipulieren willst, oder pfad-effekte fine-tunen, etc
+das test script für dbus-api: http://bazaar.launchpad.net/~inkscape.dev/inkscape/trunk/view/head:/src/extension/dbus/pytester.py
+
+https://github.com/jave/inkmacs/blob/master/inkmacs.el
+
+
+als beispiel - da sind viele 'helper' routinen drin
+
+sowas für python zb wäre ein guter ansatz
+
+ein dokument in inkscape öffnen, und dann per python darauf inkscape aktionen ausführen...
+hast du schon probiert das script laufen zu lassen?
+
+inkscape's dbus API ist aber nicht auf python beschränkt - das kannst du mit allem ansteuern, was dbus versteht
