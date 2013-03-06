@@ -1,0 +1,61 @@
+- http://dl.dropbox.com/u/65084033/devel/dbus/doc/inkscapeDbusRef.html#document.selection_combine the documentation for the inksape d-bus interface
+
+
+path  > difference on all shapes below the current one
+
+feature request -> aka razor, oder 'knife' tool
+
+mit python script nicht trivial (wenn überhaupt praktibel, ohne die funktion allzusehr einzuschränken)
+was machst du mit nested groups, mit bitmaps, text,  clips, maskierten objekten etc
+
+ich würde ein alert zeigen...
+
+https://bugs.launchpad.net/inkscape/+bug/1005734
+
+ähnlich, aber es ist nicht genau das...
+
+ausserdem haben python scritps keinen zugriff auf interne funktionen (e.g. difference)
+
+du müsstest also für jede pfad operation vom python script aus inkscape auf der kommandozeile aufrufen, etc
+
+also, man kann kein script innerhalb von inkscape laufen lassen
+doch, aber das script läuft extern, und hat keinen direkten zugriff auf inkscape's internas
+basically:
+
+das script erhält eine kopie des SVG source codes
+manipuliert den, und schickt in zurück an inkscape
+inkscape ersetzt dann den document inhalt mit dem output des scripts
+schickt ihn*
+
+mit dem neuen dbus-basierten API in trunk eher möglich (ist aber experimentell, und standard-mässig nicht enabled (configure option))
+
+dbus-api ist experimentell, kaum dokumentiert, ohne konkrete beispiele, noch python helper module (kenne nur ein project, das damit arbeitet, aber das verwendet lisp/emacs)
+
+mmn sollte ein 'knife' tool intern (basierend auf 2geom) implementiert werden (wenn die path operationen endlich nach 2geom migriert sind)
+
+hmm, der dbus hook scheint vorhanden zu sein: http://dl.dropbox.com/u/65084033/devel/dbus/doc/inkscapeDbusRef.html#document.selection_combine
+
+ob er auch funktioniert, ist eine andere frage
+wäre zum probieren...
+
+(dbus-api hat keinen maintainer, war auch ein GSoC projekt, das gemerged wurde, nicht fully completed)
+aber es gibt null python module auf denen man aufbauen könnte
+man müsste alles von grund auf schreiben
+es gibt auch keine packages von inkscape trunk mit dbusapi-enabled soweit ich weiss
+(und läuft kaum unter Windows)
+
+geht auch mit clip
+clip in SVG ist non-destructive cropping
+
+more powerful than cutting (oder 'Path > Difference')
+
+steps: alle schwarzen pfade duplizieren, und dann die duplicates zu einem einzelnen pfad kombinieren
+ein grosses rechteck zeichen (grösser als logo)
+den schwarzen kobiminierten pfad drüberlegen (raise to top)
+den schwarzen pfad vom grossen rechteck abziehen (Path > Difference)
+-> das ist der clp-path
+auswahl invertieren -> gruppieren
+gruppe und clip-path auswählen, clip setzen
+(clip-path muss über der gruppe liegen in z-order)
+so würde ich es vermutlich machen
+es geht auch mit einer maske (aber ich finde clipping in diesem fall besser, persönlich - das entspricht mehr einer 'difference' operation)
