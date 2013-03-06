@@ -95,3 +95,104 @@ ein dokument in inkscape öffnen, und dann per python darauf inkscape aktionen a
 hast du schon probiert das script laufen zu lassen?
 
 inkscape's dbus API ist aber nicht auf python beschränkt - das kannst du mit allem ansteuern, was dbus versteht
+
+
+falls du trunk ausprobieren willst, mit dbusapi:
+
+bzr branch lp:inkscape (oder, wenn's schneller gehen soll: bzr checkout --lightweight lp:inkscape )
+
+dann, erstmal autogen.sh:
+
+export NOCONFIGURE=true && ./autogen.sh
+
+dann configure mit options:
+
+mkdir build && cd build
+../configure --enable-dbusapi --enable-localinstall --prefix=/path/to/trunk
+make && make install
+
+die dbusapi doc kannst du selbst bauen, script ist 'src/extension/dbus/builddocs.sh'
+
+ich probiere es! danke!
+
+'--enable-localinstall' bedeutet dass die dbus services files in $prefix landen und nicht im system path
+
+meine tests waren wirklich nur oberflächlich, mit einem ziel:
+wie klappt das auf OS X, mit dbus als launchd service, und mit dbus manuell gestartet (und gestoppt)
+
+ich hab's zwar auf meiner todo liste, es weiter zu verfolgen, aber leider sind meine eigenen versuche, python scripts zu schreiben, noch in der start (lern) phase, obwohl es mir spass machte, als ich mal zwei wochen intensiver daran arbeitete im februar
+
+du könntest auch ihn hier fragen nach seinen erfahrungen: http://thread.gmane.org/gmane.comp.graphics.inkscape.user/14768
+
+(freenode nick: b6)
+
+soweit ich weiss, verwendet er es mit ruby auf archlinux
+09:04              b6 : i'm actually using it from ruby.
+
+email adresse auf der mailing liste: Brian Lewis <brian@lorf.org>
+
+ich schaffe es nicht, dbus erkennen zu lassen...
+configure sagt nicht welche packages fehlen...
+irgendwas mit 'dbus-glib' ?
+libdbus-1-dev war nicht genug...
+und es gibt sehr viel packages mit dbus im namen :-)
+ok, libdbus-glib-1-dev gefunden...
+in MacPorts habe ich dbus, dbus-glib und dbus-python27, aber das hilft dir nichts ;)
+ok, it's there! :-)
+nur ein "hint"
+mkdir build
+cd build
+../configure --enable-dbusapi --enable-localinstall --prefix=/path/to/trunk
+(kann nicht 100% bestätigen dass bis am ende läuft aber ist am making)
+... damit erreichst du, dass die build file nicht mit dem code vermischt wird
+das mach ich immer so
+wollte es nur nicht zusätzlich komplizieren vorhin, die schritte sind dieselben
+:-)
+imho, du solltest auch so weitergeben... das hilft hauptsächlich, wenn etwas nicht korrekt läuft...
+(und es ist auch ein grund, das neue autogen.sh nicht automatisch configure laufen zu lassen - ich mag diese änderung nicht, ganz neu)
+k
+einfach build/ löschen und wieder starten
+danke für den hinweis
+und viel komplizierter ist es nicht.
+die meiste leute folgen blind die anweisungen... und werden sich nicht an einen mkdir build && cd build stören :-)
+auf jedenfalls: es ist am kompilieren!
+(make -j4 ... wenn du das kennst...)
+ja
+(macht bei mir alles ein custom script, sorry, dass ich die details ausgelassen hatte - ich wollt nicht noch nach der anzahl cores fragen ;) )
+kein problem!
+es ging mir vor allem um die zwei configure optionen (und wie die zusammenhängen)
+bzw alle drei
+ja! und die waren gut!
+(prefix, und dann auch wirklich alles in prefix rein!)
+das was ein bisschen mühsam war, ist die liste von packages für debian...
+aber die ist nicht fix, weill sie hängt davon ab, was die leute schon installiert haben
+ls
+mmm...
+make install
+das geht ja flott bei dir… (bei mir hat ein voller build schon seine 12 min)
+(make -j4, aber ohne ccache)
+ja hat es auch mehrere minute gedauert...
+habe ich nicht mitgezehlt...
+(mein script hängt ein 'time' davor, und logged das resultat)
+
+for bazar and compiling
+
+bzr
+autopoint
+libgc-dev
+libcairomm-1.0-dev
+libglibmm-2.4-dev
+libgsl0-dev
+libxslt1-dev
+libgtkmm-2.4-dev
+libpopt-dev
+
+for DBUS:
+
+libdbus-1-dev
+libdbus-glib-1-dev
+
+
+for DBUS doc generation:
+
+xmlto:amd64
